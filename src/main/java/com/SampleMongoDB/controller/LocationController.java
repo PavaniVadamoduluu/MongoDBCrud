@@ -2,8 +2,9 @@ package com.SampleMongoDB.controller;
 
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,46 +13,73 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.SampleMongoDB.Repository.LocationRepo;
 import com.SampleMongoDB.model.Location;
 import com.SampleMongoDB.service.LocationService;
 
 @RestController
 @RequestMapping("/api")
+@Validated
 public class LocationController {
 
-	public LocationService locservice;
+	@Autowired
+    LocationService locservice;
 	
 	@Autowired
-	@Qualifier("locservice")
-	public void setLocationService(LocationService locservice){
-	    this.locservice=locservice;
-	}
+	LocationRepo locRepo;
 	
+	//Get all Locations
 	@GetMapping("/locations")
 	public List<Location> getLocation() {
 		return locservice.getLocation();
 	}
 	
+	//Save Location
 	@PostMapping("/locations/save")
-	public Location saveLocation(@RequestBody Location loc) {
+	public Location saveLocation(@Valid @RequestBody Location loc) {
 		return locservice.saveLocation(loc);
 	}
-	
-	@PutMapping(value= "/updatelocation/{id}")
-	public Location updateLoc(@PathVariable int id) throws Exception {
-		System.out.println(this.getClass().getSimpleName() + " - Get Location details by id is invoked.");
-		Optional<Location> loc =  locservice.updateLoc(id);
-		if(!loc.isPresent())
-			throw new Exception("Could not find Location with id- " + id);
-		return loc.get();
+		
+	//Update Location
+	@PutMapping("/update/{id}")
+	public Location UpdateLoc(@RequestBody Location loc , @PathVariable("id") String id){
+		return locservice.update(loc,id);
 	}
 	
+	//Delete Location
 	@DeleteMapping("/deleteLoc/{id}")
-	public String deleteLoc(@PathVariable("id") int id) throws Exception {
-			Optional<Location> loc =  locservice.deleteLoc(id);
-			if(!loc.isPresent())
-				throw new Exception("Could not find Location with id- " + id);
-		 return "deleted location succesfully.";
+	public String deleteUser(@PathVariable("id") String id) {
+		return locservice.deleteLoc(id);
+	}
+	
+	//Get Location by id
+	@GetMapping("/locations/{id}")
+	public Optional<Location> getloc(@PathVariable String id) {
+		return locservice.findById(id);
+	}
+
+	//Get Location by city
+	@GetMapping("/citylocations/{city}")
+	public List<Location> getlocByCity(@PathVariable String city) {
+		return locRepo.getCity(city);
+	}
+	
+	//Get Location by state
+	@GetMapping("/statelocations/{state}")
+	public List<Location> getlocByState(@PathVariable String state) {
+		return locRepo.getState(state);
+	}
+		
+	//Get Location by country
+	@GetMapping("/countrylocations/{country}")
+	public List<Location> getlocByCountry(@PathVariable String country) {
+		return locRepo.getCountry(country);
+	}
+	
+	//Get Location by Zipcode
+	@GetMapping("/zipcodelocations/{zipcode}")
+	public List<Location> getlocByZipcode(@PathVariable int zipcode) {
+		return locRepo.getZipcode(zipcode);
 	}
 	
 }
