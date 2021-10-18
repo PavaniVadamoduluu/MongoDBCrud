@@ -6,6 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import com.SampleMongoDB.exception.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Location {
+@XmlRootElement(name = "location")
+//@XmlAccessorType(XmlAccessType.FIELD)
+
+public class Location
+{
 
 	@Id
 	private String id;
@@ -32,8 +37,8 @@ public class Location {
 	private String country;
 
     @NotNull(message = "Zipcode is mandatory")
-	@Min(6)
-    @Digits(integer=6, fraction=2)
+	@Min(value=6, message = "Zipcode must be equal to 6 digits")
+    @Digits(integer=6, fraction=2, message = "Zipcode should have 6 digits")
     private int zipcode;
 	
 	public String getId() {

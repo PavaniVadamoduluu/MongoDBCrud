@@ -32,19 +32,18 @@ public class LocationImp implements LocationService{
 	@Override
 	@Transactional
 	public Location update(Location loc, String id) {
-		Optional<Location> findById = locRepo.findById(id);
-		if (findById.isPresent()) {
-			Location location = findById.get();
-			if (location.getAddress()!= null && !location.getAddress().isEmpty())
-				location.setAddress(location.getAddress());
-			if (location.getCity()!= null && !location.getCity().isEmpty())
-				location.setCity(location.getCity());
-			if (location.getState()!= null && !location.getState().isEmpty())
-				location.setState(location.getState());
-			if (location.getCountry()!= null && !location.getCountry().isEmpty())
-				location.setCountry(location.getCountry());
-			if (location.getZipcode()!= 0)
-				location.setZipcode(location.getZipcode());
+		Optional<Location> location = locRepo.findById(id);
+		if (location.isPresent()) {
+			if (location.get().getAddress()!= null && !location.get().getAddress().isEmpty())
+				location.get().setAddress(location.get().getAddress());
+			if (location.get().getCity()!= null && !location.get().getCity().isEmpty())
+				location.get().setCity(location.get().getCity());
+			if (location.get().getState()!= null && !location.get().getState().isEmpty())
+				location.get().setState(location.get().getState());
+			if (location.get().getCountry()!= null && !location.get().getCountry().isEmpty())
+				location.get().setCountry(location.get().getCountry());
+			if (location.get().getZipcode()!= 0)
+				location.get().setZipcode(location.get().getZipcode());
 			return locRepo.save(loc);
 	   }
 		else {

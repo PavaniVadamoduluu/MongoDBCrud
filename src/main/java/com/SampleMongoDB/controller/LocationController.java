@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,13 +38,14 @@ public class LocationController {
 	
 	//Save Location
 	@PostMapping("/locations/save")
-	public Location saveLocation(@Valid @RequestBody Location loc) {
-		return locservice.saveLocation(loc);
+	public ResponseEntity<Location> saveLocation(@Valid @RequestBody Location loc) {
+		 locservice.saveLocation(loc);
+		 return new ResponseEntity<Location>(loc, HttpStatus.OK);
 	}
 		
 	//Update Location
 	@PutMapping("/update/{id}")
-	public Location UpdateLoc(@RequestBody Location loc , @PathVariable("id") String id){
+	public Location UpdateLoc(@PathVariable("id") String id,@RequestBody Location loc){
 		return locservice.update(loc,id);
 	}
 	
